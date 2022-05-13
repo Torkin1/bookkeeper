@@ -205,6 +205,11 @@
     <forkCount.variable>1</forkCount.variable>
     <servlet-api.version>4.0.0</servlet-api.version>
     <rxjava.version>3.0.1</rxjava.version>
+
+    <!-- sonarcloud -->
+    <sonar.organization>torkin1</sonar.organization>
+    <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+    
   </properties>
 
   <!-- dependency definitions -->
