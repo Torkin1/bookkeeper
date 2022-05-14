@@ -1,0 +1,6 @@
+{
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "github-actions.workflows.pinned.workflows": [
+        ".github/workflows/maven.yml"
+    ]
+}
