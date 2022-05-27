@@ -817,6 +817,12 @@
       <artifactId>powermock-module-junit4</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>br.usp.each.saeg</groupId>
+      <artifactId>ba-dua</artifactId>
+      <version>0.6.0</version>
+      <type>pom</type>
+  </dependency>
   </dependencies>
 
   <build>
@@ -899,15 +905,13 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <version>${maven-surefire-plugin.version}</version>
-        <configuration>
-          <argLine>-Xmx2G -Djava.net.preferIPv4Stack=true -Dio.netty.leakDetection.level=paranoid</argLine>
-          <redirectTestOutputToFile>${redirectTestOutputToFile}</redirectTestOutputToFile>
-          <forkCount>${forkCount.variable}</forkCount>
-          <reuseForks>false</reuseForks>
-          <trimStackTrace>false</trimStackTrace>
-          <forkedProcessTimeoutInSeconds>1800</forkedProcessTimeoutInSeconds>
-          <rerunFailingTestsCount>${testRetryCount}</rerunFailingTestsCount>
-        </configuration>
+        <executions>
+          <execution>
+              <goals>
+                  <goal>test</goal>
+              </goals>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -1046,11 +1050,10 @@
     </plugins>
   </build>
   <profiles>
+    
+    <!-- jacoco -->
     <profile>
-      <id>coverage</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
+      <id>jacoco</id>
       <build>
         <plugins>
           <plugin>
