@@ -253,6 +253,44 @@
   </build>
   <profiles>
     
+    <!-- pit -->
+    <profile>
+      <id>pit</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <properties>
+        <pit.version>1.8.0</pit.version>
+      </properties>
+      <dependencies>
+        <dependency>
+          <groupId>org.pitest</groupId>
+          <artifactId>pitest-maven</artifactId>
+          <version>${pit.version}</version>
+        </dependency>
+      </dependencies>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.pitest</groupId>
+            <artifactId>pitest-maven</artifactId>
+            <version>${pit.version}</version>
+            <configuration>
+              <targetClasses>
+                <param>org.apache.bookkeeper.ArraysUtil</param>
+              </targetClasses>
+              <targetTests>
+                <param>org.apache.bookkeeper.ArraysUtilTest</param>
+              </targetTests>
+              <verbose>on</verbose>
+              <failWhenNoMutation>false</failWhenNoMutation>
+              <timestampedReports>false</timestampedReports>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    
     <!-- ba-dua -->
     <profile>
       <id>ba-dua</id>
@@ -323,7 +361,8 @@
           <version>${ba-dua.version}</version>
         </dependency>
       </dependencies>
-    </profile>    
+    </profile>
+        
     <profile>
       <id>vertx-http-server</id>
       <dependencies>
