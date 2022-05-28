@@ -10,7 +10,7 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 jobs:
-  build:
+  sonar_jacoco:
     name: sonarcloud + jacoco
     runs-on: ubuntu-latest
     steps:
