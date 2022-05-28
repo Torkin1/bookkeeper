@@ -286,6 +286,15 @@
               <failWhenNoMutation>false</failWhenNoMutation>
               <timestampedReports>false</timestampedReports>
             </configuration>
+            <executions>
+              <execution>
+                <id>Generate PIT report</id>
+                <phase>test-compile</phase>
+                <goals>
+                  <goal>mutationCoverage</goal>
+                </goals>
+              </execution>
+            </executions>
           </plugin>
         </plugins>
       </build>

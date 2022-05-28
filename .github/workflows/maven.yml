@@ -84,7 +84,7 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
       - name: Build and coverage with PIT
-        run: mvn test-compile org.pitest:pitest-maven:mutationCoverage -P pit
+        run: mvn test-compile -P pit
       - name: Upload PIT report
         uses: actions/upload-artifact@v3
         with:
