@@ -38,6 +38,13 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=Torkin1_bookkeeper -P jacoco
+      - name: upload jacoco report
+        uses: actions/upload-artifact@v3
+        with:
+          name: jacoco-report
+          path: ./coverage/target/site
+          if-no-files-found: error
+          retention-days: 90
   ba-dua:
     name: ba-dua coverage
     runs-on: ubuntu-latest
