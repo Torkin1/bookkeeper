@@ -680,6 +680,11 @@
         <version>${hamcrest.version}</version>
       </dependency>
       <dependency>
+        <groupId>org.jmock</groupId>
+        <artifactId>jmock</artifactId>
+        <version>${jmock.version}</version>
+      </dependency>
+      <dependency>
         <groupId>org.mockito</groupId>
         <artifactId>mockito-inline</artifactId>
         <version>3.6.28</version>
