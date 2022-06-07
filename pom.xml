@@ -154,7 +154,7 @@
     <libthrift.version>0.14.2</libthrift.version>
     <lombok.version>1.18.20</lombok.version>
     <lz4.version>1.3.0</lz4.version>
-    <mockito.version>3.0.0</mockito.version>
+    <mockito.version>3.4.0</mockito.version>
     <netty.version>4.1.72.Final</netty.version>
     <netty-boringssl.version>2.0.46.Final</netty-boringssl.version>
     <ostrich.version>9.1.3</ostrich.version>
@@ -680,15 +680,12 @@
         <version>${hamcrest.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.jmock</groupId>
-        <artifactId>jmock</artifactId>
-        <version>${jmock.version}</version>
-      </dependency>
-      <dependency>
         <groupId>org.mockito</groupId>
-        <artifactId>mockito-core</artifactId>
-        <version>${mockito.version}</version>
+        <artifactId>mockito-inline</artifactId>
+        <version>3.6.28</version>
+        <scope>test</scope>
       </dependency>
+      <!--
       <dependency>
         <groupId>org.powermock</groupId>
         <artifactId>powermock-api-mockito2</artifactId>
@@ -699,6 +696,7 @@
         <artifactId>powermock-module-junit4</artifactId>
         <version>${powermock.version}</version>
       </dependency>
+    -->
       <dependency>
         <groupId>org.apache.hadoop</groupId>
         <artifactId>hadoop-minikdc</artifactId>
@@ -804,9 +802,11 @@
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
-      <artifactId>mockito-core</artifactId>
+      <artifactId>mockito-inline</artifactId>
+      <version>3.6.28</version>
       <scope>test</scope>
-    </dependency>
+  </dependency>
+      <!--
     <dependency>
       <groupId>org.powermock</groupId>
       <artifactId>powermock-api-mockito2</artifactId>
@@ -817,6 +817,7 @@
       <artifactId>powermock-module-junit4</artifactId>
       <scope>test</scope>
     </dependency>
+  -->
   </dependencies>
 
   <build>

@@ -201,7 +201,8 @@ class LedgerCreateOp {
                 LedgerCreateOp.this.ledgerId = ledgerId;
                 LedgerCreateOp.this.metadata = metadataBuilder.withId(ledgerId).build();
                 // create a ledger with metadata
-                bk.getLedgerManager().createLedgerMetadata(ledgerId, metadata)
+                bk.getLedgerManager()
+                        .createLedgerMetadata(ledgerId, metadata)
                     .whenComplete((written, exception) -> metadataCallback(written, exception, metadataBuilder));
             }
         });
