@@ -121,11 +121,13 @@ public class BookKeeperAdminTest {
                 iterator.next();
                 numOfEntries ++;
             }
+            iterator.hasNext(); // +2 p-use
             assertEquals(expectedNumOfEntries, numOfEntries);
         } catch (Exception e) {
             Logger.getGlobal().log(Level.INFO, e.getMessage(), e);
             assertTrue(expectedNumOfEntries < 0);
         }
+        
     }
 
     @After
