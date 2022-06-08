@@ -286,9 +286,13 @@
             <configuration>
               <targetClasses>
                 <param>org.apache.bookkeeper.ArraysUtil</param>
+                <param>org.apache.bookkeeper.client.BookKeeper</param>
+                <param>org.apache.bookkeeper.client.BookKeeperAdmin</param>
               </targetClasses>
               <targetTests>
                 <param>org.apache.bookkeeper.ArraysUtilTest</param>
+                <param>org.apache.bookkeeper.client.BookKeeperTest</param>
+                <param>org.apache.bookkeeper.client.BookKeeperAdminTest</param>
               </targetTests>
               <verbose>on</verbose>
               <failWhenNoMutation>false</failWhenNoMutation>
