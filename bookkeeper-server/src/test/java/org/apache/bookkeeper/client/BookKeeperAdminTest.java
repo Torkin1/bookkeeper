@@ -117,11 +117,11 @@ public class BookKeeperAdminTest {
             int numOfEntries = 0;
             Iterable<LedgerEntry> entries = bookKeeperAdmin.readEntries(ledgerId, firstEntry, lastEntry);
             Iterator<LedgerEntry> iterator = entries.iterator();
+            iterator.hasNext(); // +2 p-use
             while (iterator.hasNext()){
                 iterator.next();
                 numOfEntries ++;
             }
-            iterator.hasNext(); // +2 p-use
             assertEquals(expectedNumOfEntries, numOfEntries);
         } catch (Exception e) {
             Logger.getGlobal().log(Level.INFO, e.getMessage(), e);
