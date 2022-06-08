@@ -1,7 +1,6 @@
 package org.apache.bookkeeper.client;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
@@ -37,8 +36,8 @@ public class BookKeeperTest {
     private int ensSize;
     private int writeQuorumSize;
     private int ackQuorumSize;
-    /** if false, we expect that a not null ledgeHandler instance is returned*/
-    private boolean isAnExceptionExpected;
+    /** if null, we expect that a not null ledgeHandler instance is returned*/
+    private Class<? extends Exception> exceptionExcpected;
     /*Set to true if you want to create a null handle after successful async creation of ledger */
     private boolean successfulCreationReturnsNullHandle;
 
@@ -61,21 +60,23 @@ public class BookKeeperTest {
     @Parameters(name = "{0}, {1}, {2}, {3}, {4}, {5}, {6}")
     public static Collection<Object[]> getParams(){
     return Arrays.asList(new Object[][]{
-            // Fists iteration - Boundary Analysis
-            { true,     null,               ArrayUtils.toPrimitive(new Byte[]{1}),      1,   1,    1, false },
-            { true,     DigestType.DUMMY,   null,                                       1,   1,    1, false },
-            { false,    DigestType.CRC32,   ArrayUtils.toPrimitive(new Byte[0]),        1,   1,    1, false },
-            { false,    DigestType.MAC,     ArrayUtils.toPrimitive(new Byte[]{1}),      1,   1,    1, false },
-            { false,    DigestType.MAC,     ArrayUtils.toPrimitive(new Byte[0]),        1,   1,    1, false },
-            { true,     DigestType.MAC,     null,                                       1,   1,    1, false },
-            { true,     DigestType.CRC32,   ArrayUtils.toPrimitive(new Byte[]{1}),     -1,   0,    0, false },
-            { true,     DigestType.CRC32,   ArrayUtils.toPrimitive(new Byte[]{1}),      0,  -1,    0, false },
-            { true,     DigestType.CRC32,   ArrayUtils.toPrimitive(new Byte[]{1}),      0,   0,   -1, false },
-            { true,     DigestType.CRC32,   ArrayUtils.toPrimitive(new Byte[]{1}),      0,   0,    1, false },
-            { false,    DigestType.CRC32,   ArrayUtils.toPrimitive(new Byte[]{1}),      1,   1,    1, false },
+            // Firt iteration - Boundary Analysis
+            { Exception.class,                      null,               ArrayUtils.toPrimitive(new Byte[]{1}),      1,   1,    1, false },
+            { Exception.class,                      DigestType.DUMMY,   null,                                       1,   1,    1, false },
+            { null,                                 DigestType.CRC32,   ArrayUtils.toPrimitive(new Byte[0]),        1,   1,    1, false },
+            { null,                                 DigestType.MAC,     ArrayUtils.toPrimitive(new Byte[]{1}),      1,   1,    1, false },
+            { null,                                 DigestType.MAC,     ArrayUtils.toPrimitive(new Byte[0]),        1,   1,    1, false },
+            { Exception.class,                      DigestType.MAC,     null,                                       1,   1,    1, false },
+            { Exception.class,                      DigestType.CRC32,   ArrayUtils.toPrimitive(new Byte[]{1}),     -1,   0,    0, false },
+            { Exception.class,                      DigestType.CRC32,   ArrayUtils.toPrimitive(new Byte[]{1}),      0,  -1,    0, false },
+            { Exception.class,                      DigestType.CRC32,   ArrayUtils.toPrimitive(new Byte[]{1}),      0,   0,   -1, false },
+            { Exception.class,                      DigestType.CRC32,   ArrayUtils.toPrimitive(new Byte[]{1}),      0,   0,    1, false },
+            { null,                                 DigestType.CRC32,   ArrayUtils.toPrimitive(new Byte[]{1}),      1,   1,    1, false },
             // Second Iteration - increment def-use and statement coverage
-            { true,    DigestType.CRC32,   ArrayUtils.toPrimitive(new Byte[0]),        1,   1,    1, true  },    // +2 p-use covered
-    });
+            { Exception.class,                      DigestType.CRC32,   ArrayUtils.toPrimitive(new Byte[0]),        1,   1,    1, true  },  // +2 p-use covered
+            // Third iteration - improved mutation coverage
+            { IllegalArgumentException.class,       DigestType.CRC32,   ArrayUtils.toPrimitive(new Byte[]{1}),      0,   0,    1, false },  // +1 mutants killed
+        });
     }
     
     private void configure() throws 
@@ -107,13 +108,13 @@ public class BookKeeperTest {
 
     }
     
-    public BookKeeperTest(boolean isAnExceptionExpected, DigestType digestType, byte[] passwd, int ensSize, int writeQuorumSize, int ackQuorumSize, boolean successfulCreationReturnsNullHandle) throws Exception {
+    public BookKeeperTest(Class<? extends Exception> exceptionExcpected, DigestType digestType, byte[] passwd, int ensSize, int writeQuorumSize, int ackQuorumSize, boolean successfulCreationReturnsNullHandle) throws Exception {
         this.digestType = digestType;
         this.passwd = passwd;
         this.ensSize = ensSize;
         this.writeQuorumSize = writeQuorumSize;
         this.ackQuorumSize = ackQuorumSize;
-        this.isAnExceptionExpected = isAnExceptionExpected;
+        this.exceptionExcpected = exceptionExcpected;
         this.successfulCreationReturnsNullHandle = successfulCreationReturnsNullHandle;
         configure();
     }
@@ -123,11 +124,11 @@ public class BookKeeperTest {
         LedgerHandle handle;
         try {
             handle = client.createLedger(ensSize, writeQuorumSize, ackQuorumSize, digestType, passwd);
-            assertNotEquals(null, handle);  // we assume any not null handle instance as valid
-            assertEquals(isAnExceptionExpected, false);
+            assertNotNull(handle);  // we assume any not null handle instance as valid
+            assertNull(exceptionExcpected);
         } catch (Exception e){
             Logger.getGlobal().log(Level.INFO, e.getMessage(), e);
-            assertEquals(isAnExceptionExpected, true);
+            assertTrue(exceptionExcpected.isAssignableFrom(e.getClass()));
         }
     }
 

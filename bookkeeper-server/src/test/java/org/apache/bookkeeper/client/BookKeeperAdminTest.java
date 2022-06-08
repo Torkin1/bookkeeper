@@ -17,6 +17,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.mockito.*;
+import org.mockito.stubbing.OngoingStubbing;
 
 @RunWith(Parameterized.class)
 public class BookKeeperAdminTest {
@@ -33,6 +34,7 @@ public class BookKeeperAdminTest {
     private long ledgerId;
     private long firstEntry;
     private long lastEntry;
+    private boolean isEntryGeneratorFaulty;
 
     /** SUT */
     @Spy
@@ -49,13 +51,18 @@ public class BookKeeperAdminTest {
     @Parameters(name = "{0}, {1}, {2}, {3}, {4}")
     public static Collection<Object[]> getParams(){
         return Arrays.asList(new Object[][]{
-            { -1, LedgerIdEquivalenceClass.UNREGISTERED,     0,  0,  0 },
-            { -1, LedgerIdEquivalenceClass.REGISTERED,       0, -1,  0 },
-            {  0, LedgerIdEquivalenceClass.REGISTERED,       0,  0, -2 },
-            {  1, LedgerIdEquivalenceClass.REGISTERED,       0,  0,  0 },
-            {  2, LedgerIdEquivalenceClass.REGISTERED,       0,  0,  1 },
-            {  0, LedgerIdEquivalenceClass.REGISTERED,       0,  1,  0 },
-            {  3, LedgerIdEquivalenceClass.REGISTERED,       0,  0, -1 }
+            // first iteration - Boundary Analysis
+            { -1, LedgerIdEquivalenceClass.UNREGISTERED,     0,  0,  0, false, },
+            { -1, LedgerIdEquivalenceClass.REGISTERED,       0, -1,  0, false, },
+            {  0, LedgerIdEquivalenceClass.REGISTERED,       0,  0, -2, false, },
+            {  1, LedgerIdEquivalenceClass.REGISTERED,       0,  0,  0, false, },
+            {  2, LedgerIdEquivalenceClass.REGISTERED,       0,  0,  1, false, },
+            {  0, LedgerIdEquivalenceClass.REGISTERED,       0,  1,  0, false, },
+            {  3, LedgerIdEquivalenceClass.REGISTERED,       0,  0, -1, false, },
+            // second iteration - improving control flow coverage
+            // no  test cases added ...
+            // third iteration - improving mutation coverage
+            { -1, LedgerIdEquivalenceClass.REGISTERED,       0,  0,  0, true, }
         });
     }
         
@@ -90,9 +97,15 @@ public class BookKeeperAdminTest {
             doAnswer(
                     invocation -> null
             ).when(ledgerHandle).asyncReadEntriesInternal(anyLong(), anyLong(), any(), any(), anyBoolean());
+            OngoingStubbing<Enumeration<LedgerEntry>> whenWaitForResult =
             syncCallbackUtils.when(
                     () -> SyncCallbackUtils.waitForResult(any())
-            ).thenReturn(entries);
+            );
+            if (!isEntryGeneratorFaulty){
+                whenWaitForResult.thenReturn(entries);
+            } else {
+                whenWaitForResult.thenThrow(new BKException.BKNoSuchEntryException());
+            }
 
         }
         else {
@@ -102,12 +115,13 @@ public class BookKeeperAdminTest {
         }
     }
     
-    public BookKeeperAdminTest(int expectedNumOfEntries, LedgerIdEquivalenceClass ledgerIdEquivalenceClass,  long ledgerId, long firstEntry, long lastEntry) throws BKException, IOException, InterruptedException {
+    public BookKeeperAdminTest(int expectedNumOfEntries, LedgerIdEquivalenceClass ledgerIdEquivalenceClass,  long ledgerId, long firstEntry, long lastEntry, boolean isEntryGeneratorFaulty) throws BKException, IOException, InterruptedException {
         this.lastEntry = lastEntry;
         this.expectedNumOfEntries = expectedNumOfEntries;
         this.ledgerIdEquivalenceClass = ledgerIdEquivalenceClass;
         this.ledgerId = ledgerId;
         this.firstEntry = firstEntry;
+        this.isEntryGeneratorFaulty = isEntryGeneratorFaulty;
         configure();
     }
 
